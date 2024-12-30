@@ -101,7 +101,14 @@ mason_lspconfig.setup({ handlers = handlers })
 
 require("lspconfig").dartls.setup({})
 require("lspconfig").texlab.setup({})
-require("lspconfig").clangd.setup({})
+require("lspconfig").clangd.setup({
+    capabilities = capabilities,
+    on_attach = on_attach,
+    cmd = {'clangd', '--background-index', '--clang-tidy', '--log=verbose'},
+    -- init_options = {
+    --     fallbackFlags = { '-std=c++17' },
+    -- },
+})
 
 -- UI Customization
 local lsph = vim.lsp.handlers

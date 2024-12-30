@@ -3,7 +3,7 @@ local aug = vim.api.nvim_create_augroup
 local system = vim.fn.system
 local g = vim.g
 
-g.vimtex_view_method = "zathura"
+g.vimtex_view_method = "zathura_simple"
 g.vimtex_imaps_enabled = 0
 g.vimtex_fold_enabled = 1
 g.vimtex_fold_types = {

@@ -9,7 +9,7 @@ return {
             "mfussenegger/nvim-lint",
             "mhartington/formatter.nvim",
             { "folke/neodev.nvim", opts = {} },
-            { "j-hui/fidget.nvim", opts = {} }, -- NOTE: `opts = {}` is the same as calling `require("fidget").setup({})`
+            { "j-hui/fidget.nvim", opts = { notification = { window = { winblend = 0 } } } }, -- NOTE: `opts = {}` is the same as calling `require("fidget").setup({})`
         },
         config = function()
             require("custom.lsp")

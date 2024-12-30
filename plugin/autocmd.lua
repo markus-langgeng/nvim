@@ -35,26 +35,26 @@ au({ "BufWritePre" }, { -- Delete trailing spaces
 --     command = [[silent !xrdb $HOME/.config/X11/xresources]]
 -- })
 
--- set fcitx5 IME to us on escape
-local fcitx5state = system("fcitx5-remote")
-au({ "InsertLeave" }, {
-    group = group_ime,
-    pattern = { "*" },
-    callback = function()
-        fcitx5state = system("fcitx5-remote")
-        vim.cmd('silent !fcitx5-remote -c')
-    end
-})
-
-au({ "InsertEnter", "BufCreate", "BufEnter", "BufLeave" }, {
-    group = group_ime,
-    pattern = { "*" },
-    callback = function()
-        if fcitx5state == 2 then
-            system("fcitx5-remote -o")
-        end
-    end,
-})
+-- -- set fcitx5 IME to us on escape
+-- local fcitx5state = system("fcitx5-remote")
+-- au({ "InsertLeave" }, {
+--     group = group_ime,
+--     pattern = { "*" },
+--     callback = function()
+--         fcitx5state = system("fcitx5-remote")
+--         vim.cmd('silent !fcitx5-remote -c')
+--     end
+-- })
+--
+-- au({ "InsertEnter", "BufCreate", "BufEnter", "BufLeave" }, {
+--     group = group_ime,
+--     pattern = { "*" },
+--     callback = function()
+--         if fcitx5state == 2 then
+--             system("fcitx5-remote -o")
+--         end
+--     end,
+-- })
 
 -- au({ "BufEnter", "FocusGained", "InsertLeave" }, {
 --     group = group_nutoggle,

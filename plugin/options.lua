@@ -19,7 +19,6 @@ o.splitbelow = true
 o.splitright = true
 o.timeoutlen = 400
 o.mouse = ""
-o.winbar = "%= %t %m %="
 o.statusline = [[%!v:lua.require("statusline").statusline()]]
 o.laststatus = 3
 o.whichwrap:append("<>[]hl")       -- go to previous/next line with h,l,left arrow and right arrow when cursor reaches end/beginning of line
