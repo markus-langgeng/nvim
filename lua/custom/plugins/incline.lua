@@ -3,12 +3,12 @@ return {
     config = function()
         require("incline").setup({
             window = { margin = { horizontal = 0} },
-            highlight = {
-                groups = {
-                    InclineNormal = { guibg = "none" },
-                    InclineNormalNC = { guibg = "none" },
-                },
-            },
+            -- highlight = {
+            --     groups = {
+            --         InclineNormal = { guibg = "none" },
+            --         InclineNormalNC = { guibg = "none" },
+            --     },
+            -- },
         })
     end,
     -- Optional: Lazy load Incline

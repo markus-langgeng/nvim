@@ -1,5 +1,4 @@
 local env = require("os").getenv
-local expand = vim.fn.expand
 
 local M = {}
 
@@ -51,56 +50,34 @@ function M.diagnostic_status()
     return table.concat(diag_msg, " ")
 end
 
--- Truncate file path except for the directory after `~` and direct parent
--- directory of current file
--- Truncate only if filepath is longer than 30 character
-function M.shorten_path()
-    local home_dir = env("HOME") or ""
-    local filepath = string.gsub(expand("%:p:h"), home_dir, "~")
-    local parts = vim.split(filepath, "/", { plain = true })
-    local shorten_path = ""
-    if string.len(filepath) < 30 then
-        return filepath .. "/"
-    end
-    for i, v in ipairs(parts) do
-        if i > 2 and i < #parts then
-            shorten_path = shorten_path .. string.sub(v, 1, 1) .. "/"
-        else
-            shorten_path = shorten_path .. v .. "/"
-        end
-    end
-    return shorten_path
-end
-
 function M.statusline()
-    -- [[ %-.15([%l,%v]%) %=%<%F%= %-.15(%y %P%) ]],
-    -- vim.fn.luaeval(require("statusline").diagnostic_status()),
-
-    local parts = {}
-
     local cur_mode = vim.api.nvim_get_mode().mode
     cur_mode = M.vim_modes[cur_mode] or cur_mode
     local diags = M.diagnostic_status() or ""
 
     if diags ~= "" then
-        table.insert(parts, string.format("%%(-- %s -- [%s]%%)", cur_mode, diags))
+        diags = string.format("%%(-- %s -- [%s]%%)", cur_mode, diags)
     else
-        table.insert(parts, string.format("%%(-- %s --%%)", cur_mode))
+        diags = string.format("%%(-- %s --%%)", cur_mode)
     end
 
-    if vim.bo.filetype == "TelescopePrompt" or vim.bo.filetype == "lazy" or vim.bo.filetype == "mason" then
-        return " " .. table.concat(parts, " ")
-    end
+    local left = string.format("%s", diags)
+    local right = string.format("[%s] (%d,%d,%d%%%%)", vim.bo.filetype, vim.fn.line('.'), vim.fn.col('.'), vim.fn.line('.') * 100 / vim.fn.line('$'))
+    local middle = string.gsub(vim.fn.expand("%:p:h"), vim.fn.expand("$HOME"), "~")
+    local wwidth = vim.api.nvim_win_get_width(0)
+    local lwidth = vim.fn.strwidth(left)
+    local rwidth = vim.fn.strwidth(right)
+    local mwidth = vim.fn.strwidth(middle)
 
-    table.insert(parts, "%(%{get(b:,'gitsigns_status','')}|%{get(b:,'gitsigns_head','')}%)")
-    table.insert(parts, "%=%(" .. M.shorten_path() .. "%)%=")
-    table.insert(parts, "%(%y")
-    table.insert(parts, "(%l,%v,%p%%)%)")
+    local available_space = wwidth - lwidth - rwidth
+    local padding = math.max(0, ( available_space - mwidth ) / 2)
 
-    parts[1] = " " .. parts[1]
-    parts[#parts] = parts[#parts] .. " "
-
-    return table.concat(parts, " ")
+    return string.format(" %s%s%s%s%s",
+        left,
+        string.rep(" ", math.floor(padding)),
+        middle,
+        string.rep(" ", math.ceil(padding)),
+        right)
 end
 
 return M
