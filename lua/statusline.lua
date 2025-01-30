@@ -1,5 +1,3 @@
-local env = require("os").getenv
-
 local M = {}
 
 M.vim_modes = {
