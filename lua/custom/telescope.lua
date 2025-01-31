@@ -13,7 +13,6 @@ require("telescope").setup({
                 ["<M-p>"] = layout.toggle_preview,
             },
         },
-        winblend = 30,
         dynamic_preview_title = true,
         file_ignore_patterns = {
             "node_modules/.*",
