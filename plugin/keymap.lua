@@ -1,5 +1,11 @@
 local set = vim.keymap.set
 
+set("n", "<leader>tm", function() vim.opt.mouse = vim.o.mouse == "" and "nvi" or "" end)
+set("n", "<leader>tw", function() vim.opt.wrap = vim.o.wrap == false and true or false end)
+
+set("n", "<leader>c*", "*``cgn")
+set("n", "<leader>c#", "#``cgN")
+
 set("n", "<F1>", "<nop>")
 set("i", "<F1>", "<nop>")
 
@@ -34,7 +40,7 @@ set("n", "<leader>f", vim.lsp.buf.format)
 set("n", "<leader>k", "<cmd>lnext<CR>zz")
 set("n", "<leader>j", "<cmd>lprev<CR>zz")
 
-set("n", "<leader>sb", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+-- set("n", "<leader>sb", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
 
 set("n", "<M-,>", "<c-w>5>")

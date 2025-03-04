@@ -12,7 +12,9 @@ local line_begin_show = function()
 end
 
 -- M.line_begin = make_cond(line_begin_show)
-M.first_line = make_cond(function() return (vim.fn.line(".") == 1) end)
+M.first_line = make_cond(function()
+    print(vim.fn.line(".") == 1)
+    return (vim.fn.line(".") == 1) end)
 
 M.latex = {}
 M.line_begin = expand.line_begin -- cannot be used for show_condition
@@ -26,9 +28,10 @@ end
 
 local document = function()
     local curfile = vim.fn.expand("%:t")
+    local curdir = string.match(vim.fn.expand("%:p:h"), "packages")
     if curfile == "main.tex" then
         return in_env("document") -- for main.tex or other main file that is not main.tex and sub tex file
-    elseif curfile == "packages.tex" or curfile == "ref.bib" or curfile == "preamble.tex" then
+    elseif curfile == "packages.tex" or curfile == "ref.bib" or curfile == "preamble.tex" or curdir == "packages" then
         return false
     else
         return true
@@ -79,6 +82,14 @@ local has_pkg = function(pkg)
 
     if vim.fn.filereadable("main.tex") == 1 then
         bufnr = vim.fn.bufadd("main.tex")
+        for _, line in ipairs(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)) do
+            local f = line:match("\\import{packages/}{([^}]+)}")
+            if f and vim.fn.filereadable("./packages/" .. f) == 1 then
+                bufnr = vim.fn.bufadd("packages/" .. f)
+                vim.fn.bufload(bufnr)
+                return check_lines(bufnr)
+            end
+        end
         vim.fn.bufload(bufnr)
         return check_lines(bufnr)
     end

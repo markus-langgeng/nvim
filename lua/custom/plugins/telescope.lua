@@ -7,20 +7,6 @@ return {
             { "nvim-telescope/telescope-smart-history.nvim" },
             { "kkharji/sqlite.lua" },
         },
-        -- keys = {
-        --     { "<leader>/" },
-        --     { "<leader>sf" },
-        --     { "<leader>sf" },
-        --     { "<leader>sh" },
-        --     { "<leader>sm" },
-        --     { "<leader>sk" },
-        --     { "<leader>sw" },
-        --     { "<leader>sg" },
-        --     { "<leader>shl" },
-        --     { "<leader>sop" },
-        --     { "<leader>smx" },
-        --     { "<leader>sc" },
-        -- },
         config = function()
             require "custom.telescope"
         end

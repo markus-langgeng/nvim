@@ -240,9 +240,70 @@ local empty = function()
         ),
         {
             condition = conditions.line_begin * conditions.first_line,
-            condition_show =  conditions.first_line
+            show_condition =  conditions.first_line
         })
 end
 table.insert(M, empty())
 
+local makalah = function()
+    return s({ trig = "makalah" },
+        fmta([[
+        <engine>
+
+        \documentclass[a4paper,12pt]{extreport}
+
+        \usepackage{graphicx}
+        \graphicspath{{img}}
+        \usepackage{import}
+        \import{packages/}{makalah.tex}
+
+        \begin{document}
+        \maketitle
+        \subimport{body/makalah/}{body.tex}
+        \end{document}
+        ]],
+            {
+                engine = c(1, {
+                    t({ "%! TEX TS-program = xelatex", "" }),
+                    t({ "%! TeX program = lualatex", "" }),
+                }),
+            }
+        ),
+        {
+            condition = conditions.line_begin * conditions.first_line,
+            show_condition =  conditions.first_line
+        })
+end
+table.insert(M, makalah())
+
+local catatan = function()
+    return s({ trig = "catatan" },
+        fmta([[
+        <engine>
+
+        \documentclass[a4paper,10pt]{extarticle}
+
+        \usepackage{graphicx}
+        \graphicspath{{img}}
+        \usepackage{import}
+        \import{packages/}{catatan.tex}
+
+        \begin{document}
+        \maketitle
+        \subimport{body/catatan/}{body.tex}
+        \end{document}
+        ]],
+            {
+                engine = c(1, {
+                    t({ "%! TEX TS-program = xelatex", "" }),
+                    t({ "%! TeX program = lualatex", "" }),
+                }),
+            }
+        ),
+        {
+            condition = conditions.line_begin * conditions.first_line,
+            show_condition =  conditions.first_line
+        })
+end
+table.insert(M, catatan())
 return M

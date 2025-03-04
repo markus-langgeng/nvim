@@ -100,7 +100,8 @@ local handlers = {
 mason_lspconfig.setup({ handlers = handlers })
 
 require("lspconfig").dartls.setup({})
-require("lspconfig").ltex.setup({})
+-- require("lspconfig").ltex.setup({})
+require("lspconfig").texlab.setup({})
 -- require("lspconfig").texlab.setup({})
 require("lspconfig").clangd.setup({
     capabilities = capabilities,

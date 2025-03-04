@@ -1,10 +1,12 @@
-local hl = vim.api.nvim_set_hl
-hl(0, "StlMode",   { fg="#dcd7ba", bg="#363646" })
-hl(0, "StlBright", { fg = "#dcd7ba" })
+local dget = vim.diagnostic.get
+local dsev = vim.diagnostic.severity
+local hlset = vim.api.nvim_set_hl
+hlset(0, "StlMode", { fg = "#dcd7ba", bg = "#363646" })
+hlset(0, "StlBright", { fg = "#dcd7ba" })
 
 local M = {}
 
-M.vim_modes = {
+local modes = {
     ["n"] = "NORMAL",
     ["no"] = "OPERATION PENDING",
     ["v"] = "VISUAL",
@@ -27,60 +29,48 @@ M.vim_modes = {
     ["t"] = "TERMINAL",
 }
 
-function M.diagnostic_status()
-    local num_errors = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
-    local diag_msg = {}
+local hl_part = function(hl, s)
+    return string.format("%s%s%s", string.format("%s%s%s", "%#", hl, "#"), table.concat(s, ""), "%*")
+end
 
-    if num_errors > 0 then
-        table.insert(diag_msg, string.format("%s%s%s%s", "%##", "E=", num_errors, "%*"))
-    end
+local clean_part = function(s)
+    return (string.gsub(s, "%%%#%w*%#", ""):gsub("%%%*", ""):gsub("%%%%", "%%"))
+end
 
-    local num_warnings = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
-    if num_warnings > 0 then
-        table.insert(diag_msg, string.format("%s%s%s%s", "%#DiagnosticWarn#", "I=", num_warnings, "%*"))
-    end
+local dgetall = function()
+    local d = {}
+    local num_e = #dget(0, { severity = dsev.ERROR })
+    local num_w = #dget(0, { severity = dsev.WARN })
+    local num_i = #dget(0, { severity = dsev.INFO })
+    local num_h = #dget(0, { severity = dsev.HINT })
 
-    local num_info = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO })
-    if num_info > 0 then
-        table.insert(diag_msg, string.format("%s%s%s%s", "%#DiagnosticInfo#", "I=", num_info, "%*"))
-    end
+    if num_e > 0 then table.insert(d, hl_part("DiagnosticError", { "E=", num_e })) end
+    if num_w > 0 then table.insert(d, hl_part("DiagnosticWarn", { "W=", num_w })) end
+    if num_i > 0 then table.insert(d, hl_part("DiagnosticInfo", { "I=", num_i })) end
+    if num_h > 0 then table.insert(d, hl_part("DiagnosticHint", { "H=", num_h })) end
 
-    local num_hints = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT })
-    if num_hints > 0 then
-        table.insert(diag_msg, string.format("%s%s%s%s", "%#DiagnosticHint#", "H=", num_hints, "%*"))
-    end
-
-    return table.concat(diag_msg, " ")
+    return table.concat(d, " ")
 end
 
 function M.statusline()
-    local cur_mode = vim.api.nvim_get_mode().mode
-    cur_mode = string.format("%s --%s-- %s", "%#StlMode#", M.vim_modes[cur_mode] or cur_mode, "%*")
-    local diags = M.diagnostic_status() ~= "" and string.format(" %s ", M.diagnostic_status()) or ""
-    local file_perc = string.format("%s%d%%%%%s", "%#StlBright#", (vim.fn.line('.') * 100 / vim.fn.line('$')), "%*")
+    local mode = hl_part("StlMode", { " --", modes[vim.api.nvim_get_mode().mode], "-- " })
+    local diags = dgetall() ~= "" and string.format(" %s", dgetall()) or ""
+    local howfarl = hl_part("StlBright", { vim.fn.line('.'), "/", vim.fn.line('$') })
+    local howfarp = hl_part("StlBright", { math.floor(vim.fn.line('.') * 100 / vim.fn.line('$')), "%%" })
 
-    local left = string.format("%s%s", cur_mode, diags)
-    local middle = string.format("%s %s %s", "%#StlBright#", string.gsub(vim.fn.expand("%:p:h"), vim.fn.expand("$HOME"), "~"), "%*")
-    local right = string.format("[%s] (%d,%d,%s) ", vim.bo.filetype, vim.fn.line('.'), vim.fn.col('.'), file_perc)
+    local w = vim.o.columns
+    local l = string.format("%s%s", mode, diags)
+    local m = hl_part("StlBright", { " ", (string.gsub(vim.fn.expand("%:p:h"), vim.fn.expand("$HOME"), "~")), " " })
+    local r = string.format("[%s] (%s,%s) ", vim.bo.filetype, howfarl, howfarp)
 
-    local clean_part = function(s)
-        return string.gsub(s, "%%%#%w*%#", ""):gsub("%%%*", ""):gsub("%%%%", "%%")
-    end
+    local lw = string.len(clean_part(l))
+    local mw = string.len(clean_part(m))
+    local rw = string.len(clean_part(r))
 
-    local wwidth = vim.o.columns
-    local lwidth = string.len(clean_part(left))
-    local mwidth = string.len(clean_part(middle))
-    local rwidth = string.len(clean_part(right))
+    local lp = string.rep(" ", math.floor(w / 2) - lw - math.floor(mw / 2))
+    local rp = string.rep(" ", math.ceil(w / 2) - rw - math.ceil(mw / 2))
 
-    local lpad = math.floor(wwidth / 2) - lwidth - math.floor(mwidth / 2)
-    local rpad = math.ceil(wwidth / 2) - rwidth - math.ceil(mwidth / 2)
-
-    return string.format("%s%s%s%s%s",
-        left,
-        string.rep(" ", lpad),
-        middle,
-        string.rep(" ", rpad),
-        right)
+    return string.format("%s%s%s%s%s", l, lp, m, rp, r)
 end
 
 return M
