@@ -249,7 +249,6 @@ local makalah = function()
     return s({ trig = "makalah" },
         fmta([[
         <engine>
-
         \documentclass[a4paper,12pt]{extreport}
 
         \usepackage{graphicx}
@@ -280,7 +279,6 @@ local catatan = function()
     return s({ trig = "catatan" },
         fmta([[
         <engine>
-
         \documentclass[a4paper,10pt]{extarticle}
 
         \usepackage{graphicx}
