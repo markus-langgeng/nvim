@@ -2,13 +2,14 @@ local o = vim.opt
 local g = vim.g
 
 -- Indenting
-o.expandtab = true
 o.smartindent = true
 o.autoindent = true
 o.shiftwidth = 4
 o.tabstop = 4
 o.softtabstop = 4
 
+o.list = true
+o.listchars = { tab = "│ " }
 o.number = true
 o.relativenumber = true
 o.cursorline = true
@@ -21,9 +22,9 @@ o.timeoutlen = 400
 o.mouse = ""
 o.statusline = [[%!v:lua.require("statusline").statusline()]]
 o.laststatus = 3
-o.whichwrap:append("<>[]hl")       -- go to previous/next line with h,l,left arrow and right arrow when cursor reaches end/beginning of line
-o.updatetime = 100                 -- interval for writing swap file to disk, also used by gitsigns
-o.shellcmdflag = "-ic"             -- interactive shell
+o.whichwrap:append("<>[]hl") -- go to previous/next line with h,l,left arrow and right arrow when cursor reaches end/beginning of line
+o.updatetime = 100           -- interval for writing swap file to disk, also used by gitsigns
+o.shellcmdflag = "-ic"       -- interactive shell
 o.hlsearch = false
 o.incsearch = true
 o.lazyredraw = true

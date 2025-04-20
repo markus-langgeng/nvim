@@ -8,53 +8,33 @@ local group_vimtex = aug("Close vimtex buffer", { clear = true })
 local group_nutoggle = aug("Number toggle", { clear = true })
 
 au({ "TextYankPost" }, {
-    pattern = "*",
-    callback = function()
-        vim.highlight.on_yank({ timeout = 50 })
-    end
+	pattern = "*",
+	callback = function()
+		vim.highlight.on_yank({ timeout = 50 })
+	end
 })
 
 au({ "BufWritePre" }, { -- Delete trailing spaces
-    pattern = "*",
-    callback = function()
-        local curpos = vim.api.nvim_win_get_cursor(0)
-        vim.cmd([[%s/\s\+$//e]])
-        vim.api.nvim_win_set_cursor(0, curpos)
-    end
+	pattern = "*",
+	callback = function()
+		local curpos = vim.api.nvim_win_get_cursor(0)
+		vim.cmd([[%s/\s\+$//e]])
+		vim.api.nvim_win_set_cursor(0, curpos)
+	end
 })
 
--- au({ "BufWritePost" }, {
---     group = group_reload_conf,
---     pattern = { "sxhkdrc" },
---     command = [[silent !kill -10 $(pidof sxhkd)]]
--- })
+au({ "BufWinEnter" }, {
+	pattern = { "*.typ" },
+	callback = function()
+		local buf = 0
+		if vim.fn.filereadable("main.typ") == 1 then
+			buf = vim.fn.bufadd("main.typ")
+		end
+		vim.lsp.buf.execute_command({ command = 'tinymist.pinMain', arguments = { vim.api.nvim_buf_get_name(buf) } })
+	end
+})
 
--- au({ "BufWritePost" }, {
---     group = group_reload_conf,
---     pattern = { "xresources" },
---     command = [[silent !xrdb $HOME/.config/X11/xresources]]
--- })
-
--- au({ "BufEnter", "FocusGained", "InsertLeave" }, {
---     group = group_nutoggle,
---     pattern = { "*" },
---     callback = function()
---         vim.opt_local.relativenumber = true
---     end,
--- })
-
--- au({ "BufLeave", "FocusLost", "InsertEnter" }, {
---     group = group_nutoggle,
---     pattern = { "*" },
---     callback = function()
---         vim.opt_local.relativenumber = false
---     end,
--- })
-
--- -- do :bwipeout so that VimtexEventQuit can be used
--- -- see :h vimtex-events
--- au("QuitPre", {
---     group = group_vimtex,
---     pattern = { "tex", "bib" },
---     command = [[:%bwipeout]]
+-- au({ "BufWritePre" }, {
+-- 	pattern = { "*.typ" },
+-- 	command = [[silent !typstyle -i %]]
 -- })

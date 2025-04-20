@@ -13,3 +13,23 @@ set("n", "<leader>nb", function() ui.nav_file(2) end, { desc = "Harpoon: [N]avig
 set("n", "<leader>nc", function() ui.nav_file(3) end, { desc = "Harpoon: [N]avigate file 3" } )
 set("n", "<leader>nd", function() ui.nav_file(4) end, { desc = "Harpoon: [N]avigate file 4" } )
 set("n", "<leader>ne", function() ui.nav_file(5) end, { desc = "Harpoon: [N]avigate file 5" } )
+
+local makalah = vim.fn.findfile("makalah.tex", "**")
+local catatan = vim.fn.findfile("catatan.tex", "**")
+local main = vim.fn.findfile("main.tex", "**")
+local pendahuluan = vim.fn.findfile("pendahuluan.tex", "**")
+local pembahasan = vim.fn.findfile("pembahasan.tex", "**")
+local penutup = vim.fn.findfile("penutup.tex", "**")
+local ref = vim.fn.findfile("ref.bib", "**")
+
+if makalah ~= "" then
+    mark.add_file(makalah)
+elseif catatan ~= "" then
+    mark.add_file(catatan)
+elseif main ~= "" then
+    mark.add_file(main)
+end
+if pendahuluan ~= "" then mark.add_file(pendahuluan) end
+if pembahasan ~= "" then mark.add_file(pembahasan) end
+if penutup ~= "" then mark.add_file(penutup) end
+if ref ~= "" then mark.add_file(ref) end

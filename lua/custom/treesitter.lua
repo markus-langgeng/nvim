@@ -1,11 +1,11 @@
 require("nvim-treesitter.configs").setup({
-    ensure_installed = { "lua", "vimdoc", "vim", "comment", "diff", "c", "jsdoc" },
+    ensure_installed = { "lua", "vimdoc", "vim", "comment", "diff", "c", "jsdoc", "typst" },
     ignore_install = { "latex" },
     sync_install = false,
     highlight = { enable = true },
     indent = {
         enable = true,
-        disable = { "python", "latex" },
+        disable = { "python", "latex", },
     },
     matchup = { enable = true },
 })

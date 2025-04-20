@@ -6,8 +6,8 @@ set("n", "<leader>tw", function() vim.opt.wrap = vim.o.wrap == false and true or
 set("n", "<leader>c*", "*``cgn")
 set("n", "<leader>c#", "#``cgN")
 
-set("n", "<F1>", "<nop>")
-set("i", "<F1>", "<nop>")
+-- set("n", "<F1>", "<nop>")
+-- set("i", "<F1>", "<nop>")
 
 set("v", "J", ":m '>+1<CR>gv=gv")
 set("v", "K", ":m '<-2<CR>gv=gv")

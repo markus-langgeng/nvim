@@ -213,13 +213,9 @@ local empty = function()
         <engine>
         \documentclass{<class>}
 
-
-
         \title{<title>}
         \author{<author>}
         \date{\today}
-
-
 
         \begin{document}
 
@@ -233,7 +229,7 @@ local empty = function()
                     t({ "%! TeX program = lualatex", "" }),
                 }),
                 title = i(2, ""),
-                author = i(3, "Markus Langgeng I. S."),
+                author = i(3, "Full Name"),
                 class = i(4, "extarticle"),
                 content = i(0, "")
             }
@@ -304,4 +300,35 @@ local catatan = function()
         })
 end
 table.insert(M, catatan())
+
+local cv = function()
+    return s({ trig = "cv" },
+        fmta([[
+        <engine>
+        \documentclass[a4paper,10pt]{extarticle}
+
+        \usepackage{graphicx}
+        \graphicspath{{img}}
+        \usepackage{import}
+        \import{packages/}{cv.tex}
+
+        \begin{document}
+        \maketitle
+
+        \end{document}
+        ]],
+            {
+                engine = c(1, {
+                    t({ "%! TEX TS-program = xelatex", "" }),
+                    t({ "%! TeX program = lualatex", "" }),
+                }),
+            }
+        ),
+        {
+            condition = conditions.line_begin * conditions.first_line,
+            show_condition =  conditions.first_line
+        })
+end
+table.insert(M, cv())
+
 return M

@@ -13,7 +13,6 @@ end
 
 -- M.line_begin = make_cond(line_begin_show)
 M.first_line = make_cond(function()
-    print(vim.fn.line(".") == 1)
     return (vim.fn.line(".") == 1) end)
 
 M.latex = {}
@@ -55,29 +54,27 @@ M.latex.env.equation = make_cond(function() return in_env("equation") end)
 M.latex.env.mathzone = make_cond(function() return vim.fn["vimtex#syntax#in_mathzone"]() == 1 end)
 M.latex.env.comment = make_cond(function() return vim.fn["vimtex#syntax#in_comment"]() == 1 end)
 
+local has_usepackage_line = function(pkg, buf)
+    local current_buffer = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+    for _, line in ipairs(current_buffer) do
+        if line:match("^\\usepackage%[?.*%]?{[%a*,%s?]*" .. pkg .. "[,%s?%a*]*}") then return true end
+    end
+    return false
+end
+
 local has_pkg = function(pkg)
     local bufnr = 0
-
-    local check_lines = function(buf)
-        local current_buffer = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
-        for _, line in ipairs(current_buffer) do
-            if line:match("^\\usepackage%[?.*%]?{[%a*,%s?]*" .. pkg .. "[,%s?%a*]*}") then
-                return true
-            end
-        end
-        return false
-    end
 
     if vim.fn.filereadable("packages.tex") == 1 then
         bufnr = vim.fn.bufadd("packages.tex")
         vim.fn.bufload(bufnr)
-        return check_lines(bufnr)
+        return has_usepackage_line(pkg, bufnr)
     end
 
     if vim.fn.filereadable("preamble.tex") == 1 then
         bufnr = vim.fn.bufadd("preamble.tex")
         vim.fn.bufload(bufnr)
-        return check_lines(bufnr)
+        return has_usepackage_line(pkg, bufnr)
     end
 
     if vim.fn.filereadable("main.tex") == 1 then
@@ -87,20 +84,15 @@ local has_pkg = function(pkg)
             if f and vim.fn.filereadable("./packages/" .. f) == 1 then
                 bufnr = vim.fn.bufadd("packages/" .. f)
                 vim.fn.bufload(bufnr)
-                return check_lines(bufnr)
+                return has_usepackage_line(pkg, bufnr)
             end
         end
         vim.fn.bufload(bufnr)
-        return check_lines(bufnr)
+        return has_usepackage_line(pkg, bufnr)
     end
 
-    return check_lines(bufnr)
+    return has_usepackage_line(pkg, bufnr)
 end
-
--- M.latex.pkg = make_cond(function(pkg)
---     -- print(vim.inspect(has_pkg(pkg)))
---     return has_pkg(pkg)
--- end)
 
 M.latex.pkg = {}
 M.latex.pkg.xpinyin = make_cond(function() return has_pkg("xpinyin") end)

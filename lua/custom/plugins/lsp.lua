@@ -6,8 +6,7 @@ return {
             -- Automatically install LSPs to stdpath for neovim
             "williamboman/mason.nvim",
             "williamboman/mason-lspconfig.nvim",
-            "mfussenegger/nvim-lint",
-            "mhartington/formatter.nvim",
+            -- "mfussenegger/nvim-lint",
             { "folke/neodev.nvim", opts = {} },
             { "j-hui/fidget.nvim", opts = { notification = { window = { winblend = 0 } } } }, -- NOTE: `opts = {}` is the same as calling `require("fidget").setup({})`
         },

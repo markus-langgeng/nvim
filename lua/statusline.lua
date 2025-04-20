@@ -1,8 +1,8 @@
 local dget = vim.diagnostic.get
 local dsev = vim.diagnostic.severity
 local hlset = vim.api.nvim_set_hl
-hlset(0, "StlMode", { fg = "#dcd7ba", bg = "#363646" })
-hlset(0, "StlBright", { fg = "#dcd7ba" })
+hlset(0, "StlMode", { fg = "#dcd7ba", bg = "#363646", bold = true })
+hlset(0, "StlBright", { fg = "#363646", bg = "#dcd7ba", bold = true })
 
 local M = {}
 
@@ -55,8 +55,8 @@ end
 function M.statusline()
     local mode = hl_part("StlMode", { " --", modes[vim.api.nvim_get_mode().mode], "-- " })
     local diags = dgetall() ~= "" and string.format(" %s", dgetall()) or ""
-    local howfarl = hl_part("StlBright", { vim.fn.line('.'), "/", vim.fn.line('$') })
-    local howfarp = hl_part("StlBright", { math.floor(vim.fn.line('.') * 100 / vim.fn.line('$')), "%%" })
+    local howfarl = hl_part("StlMode", { vim.fn.line('.'), "/", vim.fn.line('$') })
+    local howfarp = hl_part("StlMode", { math.floor(vim.fn.line('.') * 100 / vim.fn.line('$')), "%%" })
 
     local w = vim.o.columns
     local l = string.format("%s%s", mode, diags)
